@@ -8,6 +8,7 @@ public class Main {
         int min = 1;
         int max = 10;
         int answer = (int) Math.round(Math.random() * ((max - min)) + min);
+        boolean hint = true;
 
         // initialize the welcome message
         String welcomeMessage = """
@@ -39,16 +40,17 @@ public class Main {
 
         // switch case for the difficulty mode, set the chanceCount depending on the choices
         switch(diffChoice) {
-            case 1:
+            case 1: // Easy
                 chanceCount = 10;
                 break;
-            case 2:
+            case 2: // Medium
                 chanceCount = 5;
                 break;
-            case 3:
+            case 3: // hard
                 chanceCount = 3;
+                hint = false; // set hint to false if chosen difficulty is hard
                 break;
-            case 4:
+            case 4: // Extreme
                 chanceCount = 1;
                 break;
             default:
@@ -77,13 +79,23 @@ public class Main {
             // if the players answer is higher than the answer, print a hint and the tries left
             // decrement chanceCount minus 1
             if(playerAnswer > answer) {
-                System.out.printf("Nice try, choose a lower number \nTries Left: %d\n", chanceCount);
+
+                // initialize string message tryLower using a ternary operator to either show a hint or not
+                // depending on the value of boolean hint
+                String tryLower = hint?"Nice try, choose a lower number \nTries Left: %d\n":"Tries Left: %d\n";
+
+                System.out.printf(tryLower, chanceCount);
                 chanceCount--;
             }
             // else, if the player answer is lower than the answer, print a hint and the tries left
             // decrement chanceCount minus 1
             else if (playerAnswer < answer) {
-                System.out.printf("Almost! pick a higher number \nTries Left: %d\n", chanceCount);
+
+                // initialize string message tryHigher using a ternary operator to either show a hint or not
+                // depending on the value of boolean hint
+                String tryHigher = hint?"Almost! pick a higher number \nTries Left: %d\n":"Tries Left: %d\n";
+
+                System.out.printf(tryHigher, chanceCount);
                 chanceCount--;
             }
             // else, break out of loop once the player answer matches the answer
