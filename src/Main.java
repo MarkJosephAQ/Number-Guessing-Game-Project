@@ -5,6 +5,9 @@ public class Main {
         // initialize the scanner and the other variables
         Scanner input = new Scanner(System.in);
         int chanceCount;
+        int min = 1;
+        int max = 10;
+        int answer = (int) Math.round(Math.random() * ((max - min)) + min);
 
         // initialize the welcome message
         String welcomeMessage = """
@@ -52,5 +55,51 @@ public class Main {
                 chanceCount = 0;
                 break;
         }
+
+        // game start message
+        String gameStartMessage = """
+                You have %d chances to guess.
+                Let's Start!
+                """;
+
+        // print game start message
+        System.out.printf(gameStartMessage, chanceCount);
+
+        // create a loop that decreases the number of chances everytime the player guess wrong, break out of the loop
+        // once the player guess right.
+        do {
+            // print the message for guess input
+            System.out.print("\nGuess the Number: ");
+
+            // initialize scanner for the players answer
+            int playerAnswer = input.nextInt();
+
+            // if the players answer is higher than the answer, print a hint and the tries left
+            // decrement chanceCount minus 1
+            if(playerAnswer > answer) {
+                System.out.printf("Nice try, choose a lower number \nTries Left: %d\n", chanceCount);
+                chanceCount--;
+            }
+            // else, if the player answer is lower than the answer, print a hint and the tries left
+            // decrement chanceCount minus 1
+            else if (playerAnswer < answer) {
+                System.out.printf("Almost! pick a higher number \nTries Left: %d\n", chanceCount);
+                chanceCount--;
+            }
+            // else, break out of loop once the player answer matches the answer
+            else {
+                break;
+            }
+        } while (chanceCount > 0);
+
+        // if after the loop breaks and the chanceCount is equal to zero, print the game over message
+        if(chanceCount == 0) {
+            System.out.println("\nGame Over, Thank you for playing!!!");
+        }
+        // else print the congratulatory message
+        else {
+            System.out.println("\nCongratulations, You've guessed the answer!!!");
+        }
+
     }
 }
