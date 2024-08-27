@@ -5,9 +5,9 @@ public class Main {
         // initialize the scanner and the other variables
         Scanner input = new Scanner(System.in);
         String restartGame;
-        int chanceCount, attempt, min = 1, max = 10;
-        int answer = (int) Math.round(Math.random() * ((max - min)) + min);
-        boolean hint = true;
+
+        // create game object
+        Game game = new Game();
 
         do {
             // print the welcome message
@@ -32,28 +32,8 @@ public class Main {
             // initialize scanner
             int diffChoice = input.nextInt();
 
-            // switch case for the difficulty mode, set the chanceCount depending on the choices
-            switch (diffChoice) {
-                case 1: // Easy
-                    chanceCount = 5;
-                    break;
-                case 2: // Medium
-                    chanceCount = 3;
-                    break;
-                case 3: // hard
-                    chanceCount = 2;
-                    hint = false; // set hint to false if chosen difficulty is hard
-                    break;
-                case 4: // Extreme
-                    chanceCount = 1;
-                    break;
-                default:
-                    chanceCount = 0;
-                    break;
-            }
-
-            // set attempt to the current value of chanceCount
-            attempt = chanceCount;
+            // set game variables (attempt, answer, answerFound)
+            game.setGameValues(diffChoice);
 
             // game start message
             String gameStartMessage = """
@@ -62,61 +42,35 @@ public class Main {
                     """;
 
             // print game start message
-            System.out.printf(gameStartMessage, chanceCount);
+            System.out.printf(gameStartMessage, game.chanceCount);
 
-            // create a loop that decreases the number of chances everytime the player guess wrong, break out of the
-            // loop, once the player guess right.
+            // main game loop
             do {
-                // print the message for guess input
+                // print the message for guess input & initialize scanner for the players answer
                 System.out.print("\nGuess the Number: ");
-
-                // initialize scanner for the players answer
                 int playerAnswer = input.nextInt();
 
-                // if the players answer is higher than the answer, print a hint and the tries left
-                // decrement chanceCount minus 1
-                if (playerAnswer > answer) {
+                // void method that prints a message everytime a player inputs an answer
+                game.getGameMessage(playerAnswer, game.answer);
 
-                    // initialize string message tryLower using a ternary operator to either show a hint or not
-                    // depending on the value of boolean hint
-                    String tryLower = hint ? "Nice try, choose a lower number than %d \nTries Left: %d\n" : "Tries Left: %d\n";
+            // break out of loop if chanceCount is 0 and if answer is found
+            } while (game.chanceCount > 0 && !game.answerFound);
 
-                    chanceCount--;
-                    System.out.printf(tryLower, playerAnswer, chanceCount);
-                }
-                // else, if the player answer is lower than the answer, print a hint and the tries left
-                // decrement chanceCount minus 1
-                else if (playerAnswer < answer) {
-
-                    // initialize string message tryHigher using a ternary operator to either show a hint or not
-                    // depending on the value of boolean hint
-                    String tryHigher = hint ? "Almost! pick a higher number than %d \nTries Left: %d\n" : "Tries Left: %d\n";
-
-                    chanceCount--;
-                    System.out.printf(tryHigher, playerAnswer, chanceCount);
-                }
-                // else, break out of loop and decrement chanceCount, once the player answer matches the answer
-                else {
-                    chanceCount--;
-                    break;
-                }
-            } while (chanceCount > 0);
-
-            // if after the loop breaks and the chanceCount is equal to zero, print the game over message
-            if (chanceCount < 1) {
+            // print the game over message
+            if (game.chanceCount < 1) {
                 System.out.print("""
 
                         Game Over, It's ok you did your best
                         Want to go again? (Y/N):\s""");
             }
-            // else print the congratulatory message and add the attempts taken
+            // else print the congratulatory message
             else {
                 System.out.printf("""
 
                         Congratulations, You've guessed the answer with only %d attempt/s!!!
-                        That was fun, Want to play again? (Y/N):\s""",attempt-chanceCount);
+                        That was fun, Want to play again? (Y/N):\s""",game.attempt-game.chanceCount);
             }
-            // initialize the restartGame variable to the value of the next input
+            // initialize the restartGame variable
             restartGame = input.next().toUpperCase();
 
             // add a space for the next
